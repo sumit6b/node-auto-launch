@@ -16,8 +16,9 @@ module.exports =
     #   :appName - {String}
     #   :appPath - {String}
     #   :isHiddenOnLaunch - {Boolean}
+    #   :isMinimizedOnLaunch - {Boolean}
     # Returns a Promise
-    enable: ({appName, appPath, isHiddenOnLaunch}) ->
+    enable: ({appName, appPath, isHiddenOnLaunch, isMinimizedOnLaunch}) ->
         return new Promise (resolve, reject) ->
             pathToAutoLaunchedApp = appPath
             args = ''
@@ -28,9 +29,13 @@ module.exports =
             if process.versions?.electron? and fs.existsSync updateDotExe
                 pathToAutoLaunchedApp = updateDotExe
                 args = " --processStart \"#{path.basename(process.execPath)}\""
-                args += ' --process-start-args "--hidden"' if isHiddenOnLaunch
+                if isHiddenOnLaunch || isMinimizedOnLaunch
+                    args += ' --process-start-args'
+                    args += ' "--hidden"' if isHiddenOnLaunch
+                    args += ' "--minimized"' if isMinimizedOnLaunch
             else
                 args += ' --hidden' if isHiddenOnLaunch
+                args += ' --minimized' if isMinimizedOnLaunch
 
             regKey.set appName, Winreg.REG_SZ, "\"#{pathToAutoLaunchedApp}\"#{args}", (err) ->
                 return reject(err) if err?

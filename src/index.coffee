@@ -7,17 +7,19 @@ module.exports = class AutoLaunch
 
     # options - {Object}
     #   :isHidden - (Optional) {Boolean}
+    #   :isMinimized - (Optional) {Boolean}
     #   :mac - (Optional) {Object}
     #       :useLaunchAgent - (Optional) {Boolean}. If `true`, use filed-based Launch Agent. Otherwise use AppleScript
     #           to add Login Item
     #   :name - {String}
     #   :path - (Optional) {String}
-    constructor: ({name, isHidden, mac, path}) ->
+    constructor: ({name, isHidden, mac, path, isMinimized}) ->
         throw new Error 'You must specify a name' unless name?
 
         @opts =
             appName: name
             isHiddenOnLaunch: if isHidden? then isHidden else false
+            isMinimizedOnLaunch: if isMinimized? then isMinimized else false
             mac: mac ? {}
 
         versions = process?.versions
